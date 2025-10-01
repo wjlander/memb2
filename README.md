@@ -5,19 +5,20 @@ A comprehensive membership management system supporting multiple organizations w
 ## 🚀 Features
 
 - **Multi-Tenant Architecture**: Complete data isolation per organization
+- **Organization Selector**: Easy switching between organizations and super admin portal
 - **Subdomain Routing**: org.member.ringing.org.uk
-- **Digital Membership Cards**: Google Wallet & Apple Wallet integration
-- **Email Campaigns**: Resend API integration with campaign management
+- **Digital Membership Cards**: Google Wallet & Apple Wallet integration (optional)
+- **Email Campaigns**: Resend API integration with campaign management (optional)
 - **Automated Renewals**: Configurable renewal workflows
 - **Role-Based Access**: Members, Admins, Super-Admin roles
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 
 ## 🛠 Technology Stack
 
-- **Frontend**: Next.js 14, React, Tailwind CSS, TypeScript
+- **Frontend**: Vite, React, Tailwind CSS, TypeScript
 - **Backend**: Supabase (PostgreSQL, Auth, Storage)
-- **Email**: Resend API
-- **Digital Wallets**: Google Wallet API, Apple PassKit
+- **Email**: Resend API (optional)
+- **Digital Wallets**: Google Wallet API, Apple PassKit (optional)
 - **Deployment**: Ubuntu/Debian, Nginx, PM2
 
 ## 📋 Prerequisites
@@ -41,45 +42,31 @@ npm install
 
 ### 2. Environment Setup
 
-Copy `.env.example` to `.env.local` and configure:
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your Supabase credentials:
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Resend
-RESEND_API_KEY=your_resend_api_key
-
-# Google Wallet
-GOOGLE_WALLET_ISSUER_ID=your_issuer_id
-GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL=your_service_account_email
-GOOGLE_WALLET_PRIVATE_KEY=your_private_key
-
-# Apple Wallet
-APPLE_WALLET_TEAM_ID=your_team_id
-APPLE_WALLET_PASS_TYPE_ID=your_pass_type_id
-APPLE_WALLET_PRIVATE_KEY_PATH=path_to_private_key
-
-# App Configuration
-NEXT_PUBLIC_APP_URL=https://member.ringing.org.uk
-NEXT_PUBLIC_DOMAIN=member.ringing.org.uk
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
+
+Get credentials from: https://app.supabase.com/project/_/settings/api
 
 ### 3. Database Setup
 
-Run the Supabase migrations:
+In Supabase Dashboard → SQL Editor, run migrations in order:
+1. `supabase/migrations/20250929231345_bitter_cake.sql`
+2. `supabase/migrations/20250930111734_violet_valley.sql`
+3. `supabase/migrations/20250930115029_restless_fog.sql`
 
+Then create organizations:
 ```bash
-# Install Supabase CLI
-npm install -g supabase
-
-# Link to your project
-supabase link --project-ref your-project-ref
-
-# Run migrations
-supabase db push
+# Run setup-organizations.sql in Supabase SQL Editor
 ```
 
 ### 4. Development
@@ -88,7 +75,9 @@ supabase db push
 npm run dev
 ```
 
-Visit `http://localhost:3000` to see the application.
+Visit `http://localhost:5173`
+
+**✨ Organization Selector:** You'll see a list of organizations - click **"System Administration"** to access the super admin portal!
 
 ## 📁 Project Structure
 
