@@ -39,13 +39,18 @@ export const tenant = {
     const parts = hostname.split('.')
     console.log('Hostname parts:', parts)
 
-    // For development (localhost)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      // Check for subdomain in URL params for testing
-      const urlParams = new URLSearchParams(window.location.search)
-      const orgParam = urlParams.get('org')
-      console.log('Development mode, org param:', orgParam)
-      return orgParam || null
+    // Check for ?org= parameter first (works for all environments)
+    const urlParams = new URLSearchParams(window.location.search)
+    const orgParam = urlParams.get('org')
+    if (orgParam) {
+      console.log('Found org parameter:', orgParam)
+      return orgParam
+    }
+
+    // For development (localhost or IP address)
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+      console.log('Development mode (localhost/IP), no org param - showing selector')
+      return null
     }
 
     // For production (subdomain.member.ringing.org.uk)
@@ -61,26 +66,29 @@ export const tenant = {
 
   isSuperAdminSubdomain(): boolean {
     if (typeof window === 'undefined') return false
-    
+
     const hostname = window.location.hostname
     console.log('Checking if super admin subdomain for hostname:', hostname)
     const parts = hostname.split('.')
-    
-    // For development (localhost)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const isAdmin = urlParams.get('org') === 'admin'
-      console.log('Development mode, is admin:', isAdmin)
+
+    // Check URL parameter first (works for all environments)
+    const urlParams = new URLSearchParams(window.location.search)
+    const orgParam = urlParams.get('org')
+
+    // For development (localhost or IP address)
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+      const isAdmin = orgParam === 'admin'
+      console.log('Development mode (localhost/IP), is admin:', isAdmin)
       return isAdmin
     }
-    
+
     // For production (admin.member.ringing.org.uk)
     if (parts.length >= 4 && parts[parts.length - 4] === 'member') {
       const isAdmin = parts[0] === 'admin'
       console.log('Production mode, is admin:', isAdmin)
       return isAdmin
     }
-    
+
     console.log('Not super admin subdomain')
     return false
   },

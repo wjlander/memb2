@@ -61,9 +61,15 @@ function App() {
     )
   }
 
-  // Show error if organization not found
-  if (tenantError || !organization) {
-    console.log('Organization error or not found:', tenantError, organization)
+  // Show login form if not authenticated
+  // LoginForm will handle showing organization selector if no org is selected
+  if (!user) {
+    return <LoginForm />
+  }
+
+  // If authenticated but no organization, show error
+  if (!organization) {
+    console.log('Authenticated user but no organization found')
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">
@@ -82,11 +88,6 @@ function App() {
         </div>
       </div>
     )
-  }
-
-  // Show login form if not authenticated
-  if (!user) {
-    return <LoginForm />
   }
 
   // Show main application
