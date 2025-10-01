@@ -49,11 +49,13 @@ export const auth = {
 
   async getCurrentUser(): Promise<User | null> {
     const { data: { user } } = await supabase.auth.getUser()
-    
+
     if (!user) return null
 
+    console.log('Getting profile for user:', user.id)
+
     // Get user profile with organization
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select(`
         id,
@@ -69,7 +71,17 @@ export const auth = {
         )
       `)
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
+
+    if (error) {
+      console.error('Error loading profile:', error)
+    }
+
+    if (!profile) {
+      console.warn('No profile found for user:', user.id)
+    } else {
+      console.log('Profile loaded:', { role: profile.role, org: profile.organizations?.slug })
+    }
 
     return {
       id: user.id,
