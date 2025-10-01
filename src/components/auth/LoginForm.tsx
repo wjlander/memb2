@@ -22,7 +22,7 @@ export function LoginForm() {
   const [selectedOrg, setSelectedOrg] = useState<string>('')
 
   const { signIn } = useAuth()
-  const { organization, subdomain } = useTenant()
+  const { organization, subdomain, loading: tenantLoading } = useTenant()
 
   useEffect(() => {
     loadOrganizations()
@@ -61,6 +61,20 @@ export function LoginForm() {
     }
 
     setLoading(false)
+  }
+
+  if (tenantLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center space-x-2 text-gray-600">
+              <span>Loading...</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (!organization && !showOrgSelector) {
