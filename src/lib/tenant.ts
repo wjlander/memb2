@@ -33,28 +33,28 @@ export const tenant = {
 
   getCurrentSubdomain(): string | null {
     if (typeof window === 'undefined') return null
-    
+
     const hostname = window.location.hostname
     console.log('Current hostname:', hostname)
     const parts = hostname.split('.')
     console.log('Hostname parts:', parts)
-    
+
     // For development (localhost)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       // Check for subdomain in URL params for testing
       const urlParams = new URLSearchParams(window.location.search)
       const orgParam = urlParams.get('org')
       console.log('Development mode, org param:', orgParam)
-      return orgParam || 'demo'
+      return orgParam || null
     }
-    
+
     // For production (subdomain.member.ringing.org.uk)
     if (parts.length >= 4 && parts[parts.length - 4] === 'member') {
       const subdomain = parts[0]
       console.log('Production mode, detected subdomain:', subdomain)
       return subdomain
     }
-    
+
     console.log('No subdomain detected')
     return null
   },
