@@ -23,12 +23,12 @@ export function useTenant() {
         console.log('Getting current organization...')
         const org = await tenant.getCurrentOrganization()
         console.log('Current organization result:', org)
-        if (!org) {
-          console.log('No organization found, setting error')
-          setError('Organization not found')
-        } else {
+        if (org) {
           console.log('Organization found:', org.name)
           setOrganization(org)
+        } else {
+          console.log('No organization selected - will show selector')
+          setOrganization(null)
         }
       } catch (err) {
         console.log('Error loading organization:', err)
